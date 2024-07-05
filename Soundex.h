@@ -6,22 +6,9 @@
 #include <string.h>
 
 char getSoundexCode(char c) {
+    const int soundexLUT[26] = {0, 1, 2, 3, 0, 1, 2, 0, 0, 2, 2, 4, 5, 5, 0, 1, 2, 6, 2, 3, 0, 1, 0, 2, 0, 2};
     c = toupper(c);
-    if (c == 'B' || c == 'F' || c == 'P' || c == 'V') {
-     return '1';
-    } else if (c == 'C' || c == 'G' || c == 'J' || c == 'K' || c == 'Q' || c == 'S' || c == 'X' || c == 'Z') {
-     return '2';
-    } else if (c == 'D' || c == 'T') {
-     return '3';
-    } else if (c == 'L') {
-     return '4';
-    } else if (c == 'M' || c == 'N') {
-     return '5';
-    } else if (c == 'R') {
-     return '6';
-    } else {
-     return '0'; // For A, E, I, O, U, H, W, Y
-    }
+    return '0'+soundexLUT[c-'A'];
 }
 
 void generateSoundex(const char *name, char *soundex) {
