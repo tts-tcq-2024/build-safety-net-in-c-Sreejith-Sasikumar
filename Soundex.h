@@ -6,18 +6,22 @@
 #include <string.h>
 
 char getSoundexCode(char c) {
+    const int soundexLUT[26] = {0, 1, 2, 3, 0, 1, 2, 0, 0, 2, 2, 4, 5, 5, 0, 1, 2, 6, 2, 3, 0, 1, 0, 2, 0, 2};
     c = toupper(c);
-    switch (c) {
-        case 'B': case 'F': case 'P': case 'V': return '1';
-        case 'C': case 'G': case 'J': case 'K': case 'Q': case 'S': case 'X': case 'Z': return '2';
-        case 'D': case 'T': return '3';
-        case 'L': return '4';
-        case 'M': case 'N': return '5';
-        case 'R': return '6';
-        default: return '0'; // For A, E, I, O, U, H, W, Y
-    }
+    return '0'+soundexLUT[c-'A'];
 }
-
+int updateSoundex(char code, int sIndex, char *soundex){
+    if (code != '0' && code != soundex[sIndex - 1]) {
+        soundex[sIndex++] = code;
+    }
+    return sIndex;
+}
+void endSoundex(int sIndex, char *soundex){
+    while (sIndex < 4) {
+        soundex[sIndex++] = '0';
+    }
+    soundex[4] = '\0';
+}
 void generateSoundex(const char *name, char *soundex) {
     int len = strlen(name);
     soundex[0] = toupper(name[0]);
@@ -25,16 +29,9 @@ void generateSoundex(const char *name, char *soundex) {
 
     for (int i = 1; i < len && sIndex < 4; i++) {
         char code = getSoundexCode(name[i]);
-        if (code != '0' && code != soundex[sIndex - 1]) {
-            soundex[sIndex++] = code;
-        }
+        sIndex = updateSoundex(code, sIndex, soundex);
     }
-
-    while (sIndex < 4) {
-        soundex[sIndex++] = '0';
-    }
-
-    soundex[4] = '\0';
+    endSoundex(sIndex, soundex);
 }
 
 #endif // SOUNDEX_H
